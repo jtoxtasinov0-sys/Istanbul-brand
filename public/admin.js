@@ -7,6 +7,7 @@ const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const fmt = (n) => String(Math.round(Number(n) || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 const money = (n) => `${fmt(n)} so'm`;
+const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 const TOKEN_KEY = 'ib_admin_token';
 let token = (() => { try { return localStorage.getItem(TOKEN_KEY) || ''; } catch { return ''; } })();
 
@@ -49,6 +50,8 @@ const ICON = {
   send: '<path d="M21 3 3 10.5l7 2.5 2.5 7z"/><path d="m21 3-11 10"/>',
   link: '<path d="M14 4h6v6M20 4l-9 9M18 14v5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4 19V7.5A1.5 1.5 0 0 1 5.5 6H10"/>',
   refresh: '<path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/>',
+  info: '<circle cx="12" cy="12" r="8.5"/><path d="M12 11v5M12 8h.01"/>',
+  image: '<rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="m4 17.5 5-4.5 4 3.5 2.5-2 4.5 3.5"/>',
 };
 const ic = (n) => `<svg viewBox="0 0 24 24">${ICON[n] || ''}</svg>`;
 
@@ -566,6 +569,217 @@ function editCategory(c) {
     toast('Saqlandi');
     render();
   });
+}
+
+/* ---------------- storis va bannerlar ---------------- */
+const PROMO = {
+  story: {
+    title: 'Storislar', one: 'storis',
+    sub: "Bosh sahifadagi yumaloq rasmlar. Bosilganda to'liq ekranda ochiladi, pastida mahsulotga o'tish tugmasi bo'ladi.",
+    auto: "Hozir avtomatik: yangi va «Bannerda» belgilangan mahsulotlar ko'rsatilmoqda. Birinchi storisni qo'shganingizdan keyin faqat siz tanlaganlar chiqadi.",
+  },
+  banner: {
+    title: 'Bannerlar', one: 'banner',
+    sub: 'Kategoriyalar ostidagi katta aylanuvchi kartochkalar.',
+    auto: "Hozir avtomatik: chegirmadagi va «Bannerda» belgilangan mahsulotlar ko'rsatilmoqda. Birinchi bannerni qo'shganingizdan keyin faqat siz tanlaganlar chiqadi.",
+  },
+};
+
+pages.promos = async (main) => {
+  const [{ promos }, { products }, cats] = await Promise.all([api('promos'), api('products'), getCategories(true)]);
+  const ctx = { products, cats, prod: new Map(products.map((p) => [p.id, p])), cat: new Map(cats.map((c) => [c.id, c])) };
+  const card = (x, i, n) => {
+    const v = promoView(x, ctx);
+    return `<div class="pm${x.is_active ? '' : ' off'}" data-pm="${x.id}">
+      <div class="pm-img" data-pedit>${v.image ? `<img src="${esc(v.image)}" alt="" loading="lazy">` : ''}</div>
+      <div class="pm-b"><b>${esc(v.title)}</b>${x.subtitle ? `<small>${esc(x.subtitle)}</small>` : ''}<small class="lk">${ic('link')}<span>${esc(v.link)}</span></small></div>
+      <div class="pm-f"><label class="switch"><input type="checkbox" data-ptoggle${x.is_active ? ' checked' : ''}> Faol</label>
+        <span class="icons"><button class="icon-btn" data-pmv="-1" title="Oldinga"${i ? '' : ' disabled'}>${ic('left')}</button><button class="icon-btn" data-pmv="1" title="Keyinga"${i < n - 1 ? '' : ' disabled'}>${ic('right')}</button><button class="icon-btn" data-pedit title="Tahrirlash">${ic('edit')}</button><button class="icon-btn danger" data-pdel title="O'chirish">${ic('trash')}</button></span></div>
+    </div>`;
+  };
+  main.innerHTML = `
+  <div class="ph"><div><h1>Storis va bannerlar</h1><p>Mini App bosh sahifasining yuqori qismi — mavjud mahsulotlardan tanlang yoki galereyadan rasm yuklang</p></div></div>
+  <div id="promoRoot">${['story', 'banner'].map((kind) => {
+    const list = promos.filter((x) => x.kind === kind);
+    return `<section class="card promo-sec">
+      <div class="promo-head"><div><h2>${PROMO[kind].title} <em class="cnt">${list.length}</em></h2><p class="sub">${PROMO[kind].sub}</p></div>
+        <div class="acts"><button class="btn btn-ghost sm" data-from-prod="${kind}">${ic('bag')} Mahsulotlardan</button><button class="btn btn-gold sm" data-from-gal="${kind}">${ic('image')} Galereyadan</button></div></div>
+      ${list.length ? `<div class="promo-list ${kind}">${list.map((x, i) => card(x, i, list.length)).join('')}</div>`
+        : `<div class="auto-note">${ic('info')}<span>${PROMO[kind].auto}</span></div>`}
+    </section>`;
+  }).join('')}</div>`;
+  const root = $('#promoRoot', main);
+
+  const find = (el) => promos.find((x) => x.id === Number(el.closest('[data-pm]').dataset.pm));
+  root.onclick = async (e) => {
+    const fp = e.target.closest('[data-from-prod]');
+    if (fp) return pickPromoProducts(fp.dataset.fromProd, promos, ctx);
+    const fg = e.target.closest('[data-from-gal]');
+    if (fg) return editPromo({ kind: fg.dataset.fromGal, is_active: true }, ctx, true);
+    if (e.target.closest('[data-pedit]')) return editPromo(find(e.target), ctx);
+    const mv = e.target.closest('[data-pmv]');
+    if (mv) {
+      const x = find(mv);
+      const ids = promos.filter((y) => y.kind === x.kind).map((y) => y.id);
+      const i = ids.indexOf(x.id);
+      const j = i + Number(mv.dataset.pmv);
+      if (j < 0 || j >= ids.length) return;
+      [ids[i], ids[j]] = [ids[j], ids[i]];
+      try { await api('promo-sort', { body: { ids } }); render(); } catch (err) { toast(err.message, true); }
+      return;
+    }
+    if (e.target.closest('[data-pdel]')) {
+      const x = find(e.target);
+      if (await confirmBox(`Bu ${PROMO[x.kind].one} o'chirilsinmi? Mahsulotning o'ziga ta'sir qilmaydi.`)) {
+        try { await api('promo-delete', { body: { id: x.id } }); toast("O'chirildi"); render(); } catch (err) { toast(err.message, true); }
+      }
+    }
+  };
+  root.onchange = async (e) => {
+    const sw = e.target.closest('[data-ptoggle]');
+    if (!sw) return;
+    const x = find(sw);
+    try {
+      const r = await api('promo-save', { body: { ...x, is_active: sw.checked } });
+      Object.assign(x, r.promo);
+      sw.closest('.pm').classList.toggle('off', !x.is_active);
+      toast(x.is_active ? "Ko'rsatilmoqda" : 'Yashirildi');
+    } catch (err) { sw.checked = !sw.checked; toast(err.message, true); }
+  };
+};
+
+// Ilovada qanday ko'rinishi: rasm, sarlavha va havola (rasm bo'lmasa mahsulotning asosiy rasmi)
+function promoView(x, ctx) {
+  const p = ctx.prod.get(x.product_id);
+  const c = !p && ctx.cat.get(x.category_id);
+  return {
+    p,
+    image: x.image || (p && p.images[0]) || '',
+    title: x.title || (p && (p.brand || p.name)) || (c && c.name) || 'Sarlavhasiz',
+    link: p ? `Mahsulot: ${p.name}` : (c ? `Kategoriya: ${c.name}` : 'Havolasiz — faqat rasm'),
+  };
+}
+
+function pickPromoProducts(kind, promos, ctx) {
+  const used = new Set(promos.filter((x) => x.kind === kind && x.product_id).map((x) => x.product_id));
+  const list = ctx.products.filter((p) => p.is_active);
+  const sel = new Set();
+  let q = '';
+  const m = openModal(`
+  <div class="mh"><h2>${PROMO[kind].title}ga mahsulot qo'shish</h2><button class="icon-btn" data-close>${ic('x')}</button></div>
+  <div class="mb">
+    <label class="search" style="max-width:none;margin-bottom:14px">${ic('search')}<input class="input" id="pkq" placeholder="Nomi, brend yoki rang"></label>
+    <div class="pick-grid" id="pkGrid"></div>
+  </div>
+  <div class="mf"><span class="muted pick-n" id="pkN">Bir nechtasini tanlashingiz mumkin</span><button class="btn btn-ghost" data-close>Bekor qilish</button><button class="btn btn-gold" id="pkOk" disabled>${ic('plus')} Qo'shish</button></div>`);
+  const draw = () => {
+    const nq = q.toLowerCase().replace(/['ʻʼ`’]/g, '');
+    const shown = list.filter((p) => !nq || [p.name, p.brand, p.color, p.category_name].join(' ').toLowerCase().replace(/['ʻʼ`’]/g, '').includes(nq));
+    $('#pkGrid', m).innerHTML = shown.length ? shown.map((p) => `<button type="button" class="pk${sel.has(p.id) ? ' on' : ''}" data-pk="${p.id}">
+      <img src="${esc(p.images[0] || '/img/logo-mark.png')}" alt="" loading="lazy"><span>${esc(p.name)}</span>
+      ${used.has(p.id) ? "<em>Qo'shilgan</em>" : ''}<i class="ck">${ic('check')}</i></button>`).join('')
+      : '<div class="empty" style="grid-column:1/-1"><b>Mahsulot topilmadi</b></div>';
+    $('#pkN', m).textContent = sel.size ? `${sel.size} ta tanlandi` : 'Bir nechtasini tanlashingiz mumkin';
+    const ok = $('#pkOk', m);
+    ok.disabled = !sel.size;
+    ok.innerHTML = `${ic('plus')} Qo'shish${sel.size ? ` (${sel.size})` : ''}`;
+  };
+  draw();
+  $('#pkq', m).oninput = (e) => { q = e.target.value; draw(); };
+  $('#pkGrid', m).onclick = (e) => {
+    const b = e.target.closest('[data-pk]');
+    if (!b) return;
+    const id = Number(b.dataset.pk);
+    if (sel.has(id)) sel.delete(id); else sel.add(id);
+    draw();
+  };
+  $('#pkOk', m).onclick = (e) => busyBtn(e.currentTarget, async () => {
+    for (const id of sel) await api('promo-save', { body: { kind, product_id: id, is_active: true } });
+    closeModal();
+    toast(`${sel.size} ta ${PROMO[kind].one} qo'shildi`);
+    render();
+  });
+  setTimeout(() => $('#pkq', m)?.focus(), 50);
+}
+
+// Bitta storis/bannerni tahrirlash. openGallery — modal ochilishi bilan telefon galereyasini ochadi
+function editPromo(x, ctx, openGallery) {
+  const kind = x.kind;
+  const st = {
+    image: x.image || '',
+    link: x.product_id ? `p:${x.product_id}` : (x.category_id ? `c:${x.category_id}` : ''),
+  };
+  const linked = () => (st.link.startsWith('p:') ? ctx.prod.get(Number(st.link.slice(2))) : null);
+  const m = openModal(`
+  <div class="mh"><h2>${x.id ? `${cap(PROMO[kind].one)}ni tahrirlash` : `Yangi ${PROMO[kind].one}`}</h2><button class="icon-btn" data-close>${ic('x')}</button></div>
+  <form class="mb" id="pmform">
+    <div class="pm-preview ${kind}" id="pmPrev"></div>
+    <div class="field" style="margin-top:16px"><span>Rasm <span class="hint">— galereyadan yuklang yoki bog'langan mahsulot rasmlaridan birini tanlang</span></span><div class="imgs" id="pmImgs"></div></div>
+    <div class="fgrid" style="margin-top:16px">
+      <label class="field full"><span>Bosilganda nima ochiladi</span><select class="input" name="link">
+        <option value="">— Hech narsa (faqat rasm) —</option>
+        <optgroup label="Mahsulotlar">${ctx.products.map((p) => `<option value="p:${p.id}"${st.link === `p:${p.id}` ? ' selected' : ''}>${esc(p.name)}${p.is_active ? '' : ' (yashirin)'}</option>`).join('')}</optgroup>
+        <optgroup label="Kategoriyalar">${ctx.cats.map((c) => `<option value="c:${c.id}"${st.link === `c:${c.id}` ? ' selected' : ''}>${esc(c.name)}</option>`).join('')}</optgroup>
+      </select></label>
+      <label class="field full"><span>Sarlavha <span class="hint">— bo'sh qolsa mahsulot brendi yoki nomi</span></span><input class="input" name="title" maxlength="80" value="${esc(x.title || '')}"></label>
+      <label class="field full"><span>Qo'shimcha matn <span class="hint">— ixtiyoriy, ${kind === 'story' ? "storis pastida ko'rinadi" : 'banner tepasida kichik yozuv'}</span></span><input class="input" name="subtitle" maxlength="120" value="${esc(x.subtitle || '')}" placeholder="Masalan: Yangi kolleksiya · -20%"></label>
+      <label class="switch full"><input type="checkbox" name="is_active"${x.is_active !== false ? ' checked' : ''}> Ilovada ko'rsatish</label>
+    </div>
+  </form>
+  <div class="mf"><button class="btn btn-ghost" data-close>Bekor qilish</button><button class="btn btn-gold" id="savePm">${ic('check')} Saqlash</button></div>`);
+  const f = $('#pmform', m);
+
+  const drawPreview = () => {
+    const v = promoView({ ...x, image: st.image, title: f.elements.title.value.trim(), product_id: linked()?.id, category_id: st.link.startsWith('c:') ? Number(st.link.slice(2)) : null }, ctx);
+    const pic = v.image ? `<img src="${esc(v.image)}" alt="">` : `<span class="ph0">${ic('image')}</span>`;
+    $('#pmPrev', m).innerHTML = `<div class="${kind === 'story' ? 'ring' : 'bn'}">${pic}</div>
+      <div class="t"><small>Ilovada shunday ko'rinadi</small><b>${esc(v.title)}</b><small>${esc(v.link)}</small></div>`;
+  };
+  const drawImgs = () => {
+    const p = linked();
+    const pImgs = p ? p.images : [];
+    const custom = st.image && !pImgs.includes(st.image);
+    const cur = st.image || pImgs[0] || '';
+    $('#pmImgs', m).innerHTML = (custom ? `<div class="im sel"><img src="${esc(st.image)}" alt=""><span class="first">Galereya</span><div class="ia"><span></span><button type="button" data-rm title="O'chirish">${ic('trash')}</button></div></div>` : '')
+      + pImgs.map((u, i) => `<button type="button" class="im pick${u === cur ? ' sel' : ''}" data-use="${i}"><img src="${esc(u)}" alt="">${i ? '' : '<span class="first">Asosiy</span>'}</button>`).join('')
+      + `<label class="add">${ic('upload')}<span>Galereyadan yuklash</span><input type="file" accept="image/*" id="pmIn"></label>`;
+    $('#pmIn', m).onchange = async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      $('.add', m).innerHTML = '<span class="spin light"></span><span>Yuklanmoqda...</span>';
+      try { st.image = (await uploadFiles([file]))[0]; } catch (err) { toast(err.message, true); }
+      drawImgs();
+    };
+    drawPreview();
+  };
+  drawImgs();
+  $('#pmImgs', m).onclick = (e) => {
+    const use = e.target.closest('[data-use]');
+    if (use) { const i = Number(use.dataset.use); st.image = i ? linked().images[i] : ''; drawImgs(); }
+    if (e.target.closest('[data-rm]')) { st.image = ''; drawImgs(); }
+  };
+  f.elements.link.onchange = () => {
+    const before = linked();
+    st.link = f.elements.link.value;
+    // Oldingi mahsulot rasmi tanlangan bo'lsa, yangi mahsulotning asosiy rasmiga o'tamiz
+    if (before && before.images.includes(st.image)) st.image = '';
+    drawImgs();
+  };
+  f.elements.title.oninput = drawPreview;
+  f.onsubmit = (e) => { e.preventDefault(); $('#savePm', m).click(); };
+  $('#savePm', m).onclick = (e) => busyBtn(e.currentTarget, async () => {
+    const p = linked();
+    const c = st.link.startsWith('c:') ? Number(st.link.slice(2)) : null;
+    if (!st.image && !p) throw new Error('Rasm yuklang yoki mahsulot tanlang');
+    await api('promo-save', { body: {
+      id: x.id, kind, image: st.image || null, product_id: p ? p.id : null, category_id: c,
+      title: f.elements.title.value, subtitle: f.elements.subtitle.value, is_active: f.elements.is_active.checked,
+    } });
+    closeModal();
+    toast(x.id ? 'Saqlandi' : `${cap(PROMO[kind].one)} qo'shildi`);
+    render();
+  });
+  if (openGallery) $('#pmIn', m).click();
 }
 
 /* ---------------- customers ---------------- */

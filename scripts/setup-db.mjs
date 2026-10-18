@@ -87,6 +87,20 @@ const schema = [
    )`,
   `create index if not exists orders_tg_idx on orders(tg_id)`,
   `create index if not exists orders_status_idx on orders(status)`,
+  // Bosh sahifadagi storislar va bannerlar (admin paneldan tanlanadi)
+  `create table if not exists promos (
+     id serial primary key,
+     kind text not null,
+     image text,
+     title text,
+     subtitle text,
+     product_id int references products(id) on delete set null,
+     category_id int references categories(id) on delete set null,
+     sort int not null default 0,
+     is_active boolean not null default true,
+     created_at timestamptz not null default now()
+   )`,
+  `create index if not exists promos_kind_idx on promos(kind, sort)`,
 ];
 
 for (const q of schema) await sql.query(q);

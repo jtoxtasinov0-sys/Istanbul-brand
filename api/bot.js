@@ -1,6 +1,6 @@
 import { db, adminChatIds, getSettings, saveSetting, upsertUser } from '../lib/db.js';
 import { passwordOk, webhookSecret } from '../lib/auth.js';
-import { STATUSES, adminKeyboard, orderAdminText, setOrderStatus } from '../lib/orders.js';
+import { STATUSES, adminKeyboard, notifyAdminsNewOrder, setOrderStatus } from '../lib/orders.js';
 import { tg } from '../lib/telegram.js';
 import { escHtml, fmtSum, handler } from '../lib/util.js';
 
@@ -161,12 +161,5 @@ async function onPaid(m) {
   if (!id) return;
   const order = await setOrderStatus(id, 'paid', { chargeId: p.telegram_payment_charge_id });
   if (!order) return;
-  const s = await getSettings();
-  const ids = await adminChatIds();
-  await Promise.allSettled(ids.map((chat) => tg('sendMessage', {
-    chat_id: chat,
-    text: `${orderAdminText(order)}\n\n✅ <b>Onlayn to'lov qabul qilindi</b>`,
-    parse_mode: 'HTML',
-    reply_markup: adminKeyboard(order, baseUrl(s)),
-  })));
+  await notifyAdminsNewOrder(order, null, "✅ <b>Onlayn to'lov qabul qilindi</b>");
 }

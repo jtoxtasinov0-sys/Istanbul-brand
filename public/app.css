@@ -83,6 +83,8 @@ svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke
 .story .ring{width:76px;height:76px;border-radius:50%;padding:2.5px;background:var(--gold-grad)}
 .story .ring img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:3px solid var(--bg);background:var(--surface-2)}
 .story span{display:block;margin-top:6px;font-size:11.5px;font-weight:700;color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.story.seen .ring{background:var(--surface-3)}
+.story.seen span{color:var(--muted)}
 
 /* ---------- section head */
 .sec{margin-top:26px}
@@ -121,6 +123,11 @@ svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke
 .banner .go svg{width:16px;height:16px}
 .banner .pic{position:relative;z-index:1;border-radius:20px;overflow:hidden;background:var(--surface-2);box-shadow:0 10px 30px rgba(0,0,0,.4)}
 .banner .pic img{width:100%;height:100%;object-fit:cover}
+.banner.photo{display:block;padding:0;background:var(--surface-2)}
+.banner.photo::before,.banner.photo::after{display:none}
+.banner.photo>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.banner.photo .txt{position:absolute;left:0;right:0;bottom:0;padding:48px 20px 18px;background:linear-gradient(180deg,transparent,rgba(12,11,9,.88))}
+.banner.photo .go{margin-top:12px}
 .dots{display:flex;justify-content:center;gap:6px;margin-top:12px}
 .dots i{width:6px;height:6px;border-radius:3px;background:var(--surface-3);transition:width .25s ease,background .25s ease}
 .dots i.on{width:22px;background:var(--gold)}
@@ -430,6 +437,32 @@ select.input{appearance:none;-webkit-appearance:none;background-image:url("data:
 .sheet .sp span{display:block;margin-top:4px;color:var(--gold-hi);font-weight:800}
 .sheet .btn{margin-top:20px}
 @keyframes up{from{transform:translateY(40px);opacity:.4}}
+
+/* ---------- story viewer */
+body.story-open{overflow:hidden}
+.story-view{position:fixed;inset:0;z-index:90;background:#000;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;animation:fade .2s ease}
+.story-view img{-webkit-user-drag:none;pointer-events:none}
+.sv-blur{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:cover;filter:blur(30px) brightness(.4);transform:scale(1.2)}
+.sv-img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.sv-top{position:absolute;left:0;right:0;top:0;padding:calc(10px + var(--tg-content-safe-area-inset-top,0px)) 12px 34px;background:linear-gradient(180deg,rgba(0,0,0,.6),transparent)}
+.sv-bars{display:flex;gap:4px}
+.sv-bars i{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,.3);overflow:hidden}
+.sv-bars b{display:block;height:100%;width:0;background:#fff}
+.sv-head{display:flex;align-items:center;gap:10px;margin-top:10px}
+.sv-av{width:34px;height:34px;flex:none;border-radius:50%;padding:2px;background:var(--gold-grad)}
+.sv-av img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid #000}
+.sv-head b{flex:1;min-width:0;font-size:14.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 6px rgba(0,0,0,.5)}
+.sv-x{width:40px;height:40px;flex:none;display:grid;place-items:center;color:#fff}
+.sv-x svg{width:24px;height:24px}
+.sv-foot{position:absolute;left:0;right:0;bottom:0;padding:48px var(--gutter) calc(18px + var(--safe-b));background:linear-gradient(0deg,rgba(0,0,0,.75),transparent)}
+.sv-foot p{margin:0 0 12px;font-size:15px;font-weight:700;line-height:1.4;text-shadow:0 1px 8px rgba(0,0,0,.6)}
+.sv-card{display:flex;align-items:center;gap:12px;padding:10px;border-radius:20px;background:rgba(22,20,15,.88);border:1px solid var(--line-2);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.sv-card img{width:52px;height:60px;flex:none;border-radius:12px;object-fit:cover;background:var(--surface-2)}
+.sv-card .t{flex:1;min-width:0}
+.sv-card .t b{display:block;font-size:14px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sv-card .t em{display:block;margin-top:3px;font-style:normal;font-weight:800;color:var(--gold-hi)}
+.sv-card .go{flex:none;display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 14px;border-radius:999px;background:var(--gold-grad);color:var(--on-gold);font-weight:800;font-size:13.5px}
+.sv-card .go svg{width:16px;height:16px}
 @keyframes fade{from{opacity:0}}
 
 /* ---------- toast */

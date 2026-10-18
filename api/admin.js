@@ -11,6 +11,7 @@ const actions = {
   login, stats, orders, order, 'order-status': orderStatus, 'order-note': orderNote, receipt,
   products, 'product-save': productSave, 'product-delete': productDelete, 'product-patch': productPatch,
   upload, categories, 'category-save': categorySave, 'category-delete': categoryDelete,
+  promos, 'promo-save': promoSave, 'promo-delete': promoDelete, 'promo-sort': promoSort,
   customers, 'admin-chat': adminChat, settings, 'settings-save': settingsSave,
   'bot-info': botInfo, 'bot-setup': botSetupAction, 'bot-test': botTest,
 };
@@ -244,6 +245,57 @@ async function categorySave(req, b) {
 
 async function categoryDelete(req, b) {
   await db()`delete from categories where id = ${toInt(b.id)}`;
+  return { ok: true };
+}
+
+// ---------- promos: bosh sahifadagi storislar va bannerlar
+const PROMO_KINDS = new Set(['story', 'banner']);
+
+async function promos() {
+  const rows = await db()`select * from promos order by sort, id`;
+  return { promos: rows };
+}
+
+// Rasm galereyadan yuklangan bo'lishi yoki mahsulotdan olinishi mumkin; rasm bo'lmasa mahsulotning asosiy rasmi ishlatiladi
+async function promoSave(req, b) {
+  const sql = db();
+  if (!PROMO_KINDS.has(b.kind)) throw new HttpError(400, "Noto'g'ri tur");
+  const x = {
+    image: normImages([b.image])[0] || null,
+    title: clean(b.title, 80) || null,
+    subtitle: clean(b.subtitle, 120) || null,
+    product_id: toInt(b.product_id),
+    category_id: toInt(b.category_id),
+    is_active: b.is_active !== false,
+  };
+  if (x.product_id) x.category_id = null;
+  if (!x.image && !x.product_id) throw new HttpError(400, 'Rasm yuklang yoki mahsulot tanlang');
+  const id = toInt(b.id);
+  if (id) {
+    const [row] = await sql`update promos set image = ${x.image}, title = ${x.title}, subtitle = ${x.subtitle},
+        product_id = ${x.product_id}, category_id = ${x.category_id}, is_active = ${x.is_active}
+      where id = ${id} returning *`;
+    if (!row) throw new HttpError(404, 'Topilmadi');
+    return { promo: row };
+  }
+  const [row] = await sql`insert into promos (kind, image, title, subtitle, product_id, category_id, is_active, sort)
+    values (${b.kind}, ${x.image}, ${x.title}, ${x.subtitle}, ${x.product_id}, ${x.category_id}, ${x.is_active},
+            (select coalesce(max(sort) + 1, 0) from promos where kind = ${b.kind}))
+    returning *`;
+  return { promo: row };
+}
+
+async function promoDelete(req, b) {
+  await db()`delete from promos where id = ${toInt(b.id)}`;
+  return { ok: true };
+}
+
+// ids tartibida sort = 1, 2, 3...
+async function promoSort(req, b) {
+  const ids = (Array.isArray(b.ids) ? b.ids : []).map((v) => toInt(v)).filter(Boolean).slice(0, 200);
+  if (!ids.length) return { ok: true };
+  await db()`update promos p set sort = x.ord
+    from unnest(${ids}::int[]) with ordinality as x(id, ord) where p.id = x.id`;
   return { ok: true };
 }
 

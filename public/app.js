@@ -176,6 +176,9 @@ let sheetSel = null;
 let cat = { c: 'all', q: '', s: 'pop' };
 let timers = [];
 let busy = false;
+let homeStories = [];
+let seenStories = new Set(store.get('seen', []));
+let sv = null;
 
 const user = tg && tg.initDataUnsafe && tg.initDataUnsafe.user;
 if (user && !co.name) co.name = [user.first_name, user.last_name].filter(Boolean).join(' ');
@@ -345,15 +348,36 @@ function contactRows() {
 const views = {};
 const mounts = {};
 
+// Admin paneldan tanlangan storis/bannerlar: rasm galereyadan yoki mahsulotdan
+function promoList(list) {
+  return (list || []).map((x) => {
+    const p = x.product_id ? byId.get(x.product_id) : null;
+    const c = !p && x.category_id ? catById(x.category_id) : null;
+    const image = x.image || (p && pImg(p));
+    return image ? { ...x, key: `s${x.id}`, p, c, image } : null;
+  }).filter(Boolean);
+}
+const storyLabel = (x) => x.title || (x.p && (x.p.brand || x.p.name)) || (x.c && catName(x.c)) || D.settings.shop_name;
+
 views.home = () => {
   const P = D.products;
   const name = (user && user.first_name) || t('guest');
   const seen = new Set();
   const uniq = (arr) => arr.filter((p) => (seen.has(p.id) ? false : (seen.add(p.id), true)));
-  const stories = uniq([...P.filter((p) => p.is_new), ...P.filter((p) => p.is_featured), ...P]).slice(0, 12);
-  let banners = P.filter((p) => p.old_price && p.old_price > p.price).concat(P.filter((p) => p.is_featured));
-  banners = banners.filter((p, i) => banners.findIndex((x) => x.id === p.id) === i).slice(0, 6);
-  if (!banners.length) banners = P.slice(0, 4);
+  // Admin hech narsa tanlamagan bo'lsa — avtomatik: yangi, bannerdagi va chegirmadagi mahsulotlar
+  let stories = promoList(D.promos && D.promos.stories);
+  if (!stories.length) {
+    stories = uniq([...P.filter((p) => p.is_new), ...P.filter((p) => p.is_featured), ...P]).slice(0, 12)
+      .map((p) => ({ key: `p${p.id}`, p, image: pImg(p) }));
+  }
+  homeStories = stories;
+  let banners = promoList(D.promos && D.promos.banners);
+  if (!banners.length) {
+    let auto = P.filter((p) => p.old_price && p.old_price > p.price).concat(P.filter((p) => p.is_featured));
+    auto = auto.filter((p, i) => auto.findIndex((x) => x.id === p.id) === i).slice(0, 6);
+    if (!auto.length) auto = P.slice(0, 4);
+    banners = auto.map((p) => ({ p, image: pImg(p) }));
+  }
 
   // Ommabop: avval sotilganlar, keyin har kategoriyadan navbat bilan
   const rank = new Map();
@@ -379,7 +403,7 @@ views.home = () => {
     <label class="search">${ic('search')}<input id="homeQ" type="search" enterkeyhint="search" autocomplete="off" placeholder="${t('search_ph')}"></label>
   </section>
 
-  <div class="stories">${stories.map((p) => `<a class="story" href="#/p/${p.id}"><div class="ring">${img(pImg(p), p.name, true)}</div><span>${esc(p.brand || p.name)}</span></a>`).join('')}</div>
+  <div class="stories">${stories.map((x, i) => `<button class="story${seenStories.has(x.key) ? ' seen' : ''}" data-story="${i}"><div class="ring">${img(x.image, storyLabel(x), true)}</div><span>${esc(storyLabel(x))}</span></button>`).join('')}</div>
 
   <section class="sec">
     ${secHead(t('categories'), '#/catalog')}
@@ -390,17 +414,27 @@ views.home = () => {
   </section>
 
   <section class="sec">
-    <div class="banners" id="banners">${banners.map((p) => {
+    <div class="banners" id="banners">${banners.map((x) => {
+      const p = x.p;
+      if (!p) {
+        // Galereyadan yuklangan rasm — butun banner bo'ylab
+        const href = x.c ? `#/catalog?c=${x.c.id}` : '';
+        const tag = href ? 'a' : 'div';
+        const txt = x.subtitle || x.title || href;
+        return `<${tag} class="banner photo"${href ? ` href="${href}"` : ''}>${img(x.image, x.title || '', true)}
+          ${txt ? `<div class="txt">${x.subtitle ? `<span class="tagline">${esc(x.subtitle)}</span>` : ''}${x.title ? `<h3>${esc(x.title)}</h3>` : ''}${href ? `<span class="go">${t('view')} ${ic('arrow')}</span>` : ''}</div>` : ''}
+        </${tag}>`;
+      }
       const d = pct(p);
-      const tagline = d ? `-${d}% · ${t('discount')}` : (p.is_new ? t('new_collection') : (p.brand || p.badge || t('new_collection')));
+      const tagline = x.subtitle || (d ? `-${d}% · ${t('discount')}` : (p.is_new ? t('new_collection') : (p.brand || p.badge || t('new_collection'))));
       return `<a class="banner" href="#/p/${p.id}">
         <div class="txt">
           <span class="tagline">${esc(tagline)}</span>
-          <h3>${esc(p.name)}</h3>
+          <h3>${esc(x.title || p.name)}</h3>
           <div class="bp"><b>${money(p.price)}</b>${p.old_price ? `<s>${fmt(p.old_price)}</s>` : ''}</div>
           <span class="go">${t('view')} ${ic('arrow')}</span>
         </div>
-        <div class="pic">${img(pImg(p), p.name, true)}</div>
+        <div class="pic">${img(x.image, p.name, true)}</div>
       </a>`;
     }).join('')}</div>
     ${banners.length > 1 ? `<div class="dots" id="bdots">${banners.map((_, i) => `<i class="${i ? '' : 'on'}"></i>`).join('')}</div>` : ''}
@@ -939,6 +973,105 @@ function renderSheet() {
 }
 function closeSheet() { $('#sheet').hidden = true; $('#sheet').innerHTML = ''; sheetSel = null; }
 
+/* ---------------- story viewer ---------------- */
+const STORY_MS = 5000;
+
+function openStory(i) {
+  if (!homeStories[i]) return;
+  sv = { i, elapsed: 0, last: performance.now(), paused: false, loading: true, raf: 0, downAt: 0 };
+  $('#story').hidden = false;
+  document.body.classList.add('story-open');
+  if (tg && tg.BackButton) tg.BackButton.show();
+  hap.tap();
+  showStory();
+  sv.raf = requestAnimationFrame(tickStory);
+}
+
+function showStory() {
+  const x = homeStories[sv.i];
+  if (!x) return closeStory();
+  sv.elapsed = 0;
+  sv.loading = true;
+  if (!seenStories.has(x.key)) {
+    seenStories.add(x.key);
+    store.set('seen', [...seenStories].slice(-300));
+  }
+  const ring = $(`.story[data-story="${sv.i}"]`);
+  if (ring) ring.classList.add('seen');
+  const href = x.p ? `#/p/${x.p.id}` : (x.c ? `#/catalog?c=${x.c.id}` : '');
+  $('#story').innerHTML = `
+    <img class="sv-blur" src="${esc(x.image)}" alt="">
+    <img class="sv-img" src="${esc(x.image)}" alt="${esc(storyLabel(x))}">
+    <div class="sv-top">
+      <div class="sv-bars">${homeStories.map((_, j) => `<i><b style="width:${j < sv.i ? 100 : 0}%"></b></i>`).join('')}</div>
+      <div class="sv-head"><span class="sv-av"><img src="/img/logo-mark.png" alt=""></span><b>${esc(storyLabel(x))}</b>
+        <button class="sv-x" data-act="story-close" aria-label="${t('back')}">${ic('x')}</button></div>
+    </div>
+    ${x.subtitle || href ? `<div class="sv-foot">
+      ${x.subtitle ? `<p>${esc(x.subtitle)}</p>` : ''}
+      ${x.p ? `<a class="sv-card" href="${href}" data-act="story-go">${img(pImg(x.p), x.p.name, true)}<span class="t"><b>${esc(x.p.name)}</b><em>${money(x.p.price)}</em></span><span class="go">${t('view')} ${ic('arrow')}</span></a>`
+        : href ? `<a class="btn btn-gold" href="${href}" data-act="story-go">${t('view')} ${ic('arrow')}</a>` : ''}
+    </div>` : ''}`;
+  const im = $('#story .sv-img');
+  const ready = () => { if (sv) { sv.loading = false; sv.last = performance.now(); } };
+  if (im.complete) ready(); else { im.onload = ready; im.onerror = ready; }
+}
+
+function tickStory(now) {
+  if (!sv) return;
+  const dt = now - sv.last;
+  sv.last = now;
+  if (!sv.paused && !sv.loading && !document.hidden) sv.elapsed += dt;
+  const bar = $$('#story .sv-bars b')[sv.i];
+  if (bar) bar.style.width = `${Math.min(100, (sv.elapsed / STORY_MS) * 100)}%`;
+  if (sv.elapsed >= STORY_MS) { stepStory(1); return; }
+  sv.raf = requestAnimationFrame(tickStory);
+}
+
+function stepStory(d) {
+  if (!sv) return;
+  const n = sv.i + d;
+  if (n >= homeStories.length) { closeStory(); return; }
+  if (n >= 0) { sv.i = n; showStory(); } else sv.elapsed = 0;
+  hap.tap();
+  cancelAnimationFrame(sv.raf);
+  sv.last = performance.now();
+  sv.raf = requestAnimationFrame(tickStory);
+}
+
+function closeStory() {
+  if (!sv) return;
+  cancelAnimationFrame(sv.raf);
+  sv = null;
+  const el = $('#story');
+  el.hidden = true;
+  el.innerHTML = '';
+  document.body.classList.remove('story-open');
+  if (tg && tg.BackButton && TABS.includes(route().name)) tg.BackButton.hide();
+}
+
+// Bosib turish — pauza, chap tomonga tegish — oldingi, o'ngga — keyingi, pastga surish — yopish
+(() => {
+  const el = $('#story');
+  el.addEventListener('pointerdown', (e) => {
+    if (!sv || e.target.closest('.sv-foot,.sv-x')) return;
+    sv.paused = true;
+    sv.downAt = Date.now();
+    sv.downX = e.clientX;
+    sv.downY = e.clientY;
+  });
+  el.addEventListener('pointerup', (e) => {
+    if (!sv || !sv.downAt) return;
+    const held = Date.now() - sv.downAt;
+    sv.paused = false;
+    sv.downAt = 0;
+    if (e.clientY - sv.downY > 80) { closeStory(); return; }
+    if (held < 300 && Math.abs(e.clientX - sv.downX) < 30) stepStory(e.clientX < window.innerWidth / 3 ? -1 : 1);
+  });
+  el.addEventListener('pointercancel', () => { if (sv) { sv.paused = false; sv.downAt = 0; } });
+  el.addEventListener('contextmenu', (e) => e.preventDefault());
+})();
+
 /* ---------------- cart ops ---------------- */
 function addToCart(id, size, qty = 1) {
   const it = cart.find((i) => i.id === id && i.size === size);
@@ -970,6 +1103,7 @@ function route() {
 }
 
 function onHashChange() {
+  closeStory();
   const h = location.hash || '#/';
   if (nav.last) nav.scroll[nav.last] = window.scrollY;
   if (nav.stack.length > 1 && nav.stack[nav.stack.length - 2] === h) { nav.stack.pop(); nav.back = true; }
@@ -978,7 +1112,8 @@ function onHashChange() {
 }
 
 function goBack() {
-  if (route().name === 'success') location.hash = '#/';
+  if (sv) closeStory();
+  else if (route().name === 'success') location.hash = '#/';
   else if (nav.stack.length > 1) history.back();
   else location.replace('#/');
 }
@@ -1018,7 +1153,7 @@ function setLang(l) {
 
 /* ---------------- events ---------------- */
 document.addEventListener('click', (e) => {
-  const el = e.target.closest('[data-act],[data-fav],[data-add],[data-size],[data-ssize],[data-pdq],[data-cq],[data-crm],[data-copy],[data-deliv],[data-pay],[data-link],[data-lang],[data-cat]');
+  const el = e.target.closest('[data-act],[data-fav],[data-add],[data-size],[data-ssize],[data-pdq],[data-cq],[data-crm],[data-copy],[data-deliv],[data-pay],[data-link],[data-lang],[data-cat],[data-story]');
   if (!el) return;
   const ds = el.dataset;
 
@@ -1081,6 +1216,7 @@ document.addEventListener('click', (e) => {
   if (ds.pay) { co.payment = ds.pay; saveCo(); hap.tap(); rerender(); return; }
   if (ds.link) { e.preventDefault(); openLink(ds.link); return; }
   if (ds.lang) { setLang(ds.lang); return; }
+  if (ds.story) { openStory(Number(ds.story)); return; }
   if (ds.cat) {
     cat.c = ds.cat;
     hap.tap();
@@ -1095,6 +1231,8 @@ document.addEventListener('click', (e) => {
     case 'retry': render.failed = false; render(); loadCatalog(); break;
     case 'clearq': { const q = $('#q'); q.value = ''; cat.q = ''; el.hidden = true; renderGrid(); q.focus(); break; }
     case 'sheet-close': closeSheet(); break;
+    case 'story-close': closeStory(); break;
+    case 'story-go': closeStory(); break;
     case 'sheet-add': {
       if (!sheetSel.size) { const s = $('#ssizes'); s.classList.remove('shake'); void s.offsetWidth; s.classList.add('shake'); hap.note('warning'); break; }
       addToCart(sheetSel.id, sheetSel.size);
@@ -1125,7 +1263,15 @@ document.addEventListener('click', (e) => {
   }
 });
 
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && sheetSel) closeSheet(); });
+document.addEventListener('keydown', (e) => {
+  if (sv) {
+    if (e.key === 'Escape') closeStory();
+    else if (e.key === 'ArrowRight') stepStory(1);
+    else if (e.key === 'ArrowLeft') stepStory(-1);
+    return;
+  }
+  if (e.key === 'Escape' && sheetSel) closeSheet();
+});
 
 /* ---------------- boot ---------------- */
 async function loadCatalog() {
