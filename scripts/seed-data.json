@@ -1,0 +1,916 @@
+{
+ "categories": [
+  {
+   "slug": "ustki-kiyim",
+   "name": "Ustki kiyim",
+   "name_ru": "Верхняя одежда",
+   "sort": 1
+  },
+  {
+   "slug": "kofta-sviter",
+   "name": "Kofta va sviterlar",
+   "name_ru": "Кофты и свитеры",
+   "sort": 2
+  },
+  {
+   "slug": "sport",
+   "name": "Sport to'plamlar",
+   "name_ru": "Спортивные костюмы",
+   "sort": 3
+  },
+  {
+   "slug": "polo",
+   "name": "Polo",
+   "name_ru": "Поло",
+   "sort": 4
+  },
+  {
+   "slug": "futbolka",
+   "name": "Futbolkalar",
+   "name_ru": "Футболки",
+   "sort": 5
+  },
+  {
+   "slug": "koylak",
+   "name": "Ko'ylaklar",
+   "name_ru": "Рубашки",
+   "sort": 6
+  },
+  {
+   "slug": "shim",
+   "name": "Shimlar",
+   "name_ru": "Брюки",
+   "sort": 7
+  },
+  {
+   "slug": "oyoq-kiyim",
+   "name": "Oyoq kiyim",
+   "name_ru": "Обувь",
+   "sort": 8
+  },
+  {
+   "slug": "aksessuar",
+   "name": "Aksessuarlar",
+   "name_ru": "Аксессуары",
+   "sort": 9
+  }
+ ],
+ "products": [
+  {
+   "no": 1,
+   "category": "ustki-kiyim",
+   "name": "Arte Puro kuzgi kurtka",
+   "brand": "Arte Puro",
+   "badge": null,
+   "color": "To'q ko'k",
+   "sizes": [
+    "M",
+    "L",
+    "XL",
+    "2XL",
+    "3XL"
+   ],
+   "price": 950000,
+   "image": "/img/products/p01.jpg",
+   "is_new": false,
+   "is_featured": true
+  },
+  {
+   "no": 2,
+   "category": "ustki-kiyim",
+   "name": "Zamokli kurtka-ko'ylak (overshirt)",
+   "brand": null,
+   "badge": null,
+   "color": "Grafit",
+   "sizes": [
+    "M",
+    "L",
+    "XL",
+    "2XL",
+    "3XL"
+   ],
+   "price": 690000,
+   "image": "/img/products/p02.jpg",
+   "is_new": false,
+   "is_featured": false
+  },
+  {
+   "no": 3,
+   "category": "ustki-kiyim",
+   "name": "Yengil puxovik jilet",
+   "brand": null,
+   "badge": null,
+   "color": "To'q ko'k",
+   "sizes": [
+    "M",
+    "L",
+    "XL",
+    "2XL",
+    "3XL"
+   ],
+   "price": 520000,
+   "image": "/img/products/p03.jpg",
+   "is_new": false,
+   "is_featured": false
+  },
+  {
+   "no": 4,
+   "category": "ustki-kiyim",
+   "name": "Trikotaj jilet",
+   "brand": null,
+   "badge": null,
+   "color": "Bordo",
+   "sizes": [
+    "M",
+    "L",
+    "XL",
+    "2XL",
+    "3XL"
+   ],
+   "price": 420000,
+   "image": "/img/products/p04.jpg",
+   "is_new": false,
+   "is_featured": false
+  },
+  {
+   "no": 5,
+   "category": "ustki-kiyim",
+   "name": "Kuzgi kurtka, kulrang yoqali",
+   "brand": null,
+   "badge": "Yangi",
+   "color": "To'q ko'k",
+   "sizes": [
+    "M",
+    "L",
+    "XL",
+    "2XL",
+    "3XL"
+   ],
+   "price": 850000,
+   "image": "/img/products/p05.jpg",
+   "is_new": true,
+   "is_featured": false
+  },
+  {
+   "no": 6,
+   "category": "ustki-kiyim",
+   "name": "Sport kurtka, kamuflyaj panel",
+   "brand": null,
+   "badge": null,
+   "color": "To'q ko'k",
+   "sizes": [
+    "M",
+    "L",
+    "XL",
+    "2XL",
+    "3XL"
+   ],
+   "price": 780000,
+   "image": "/img/products/p06.jpg",
+   "is_new": false,
+   "is_featured": false
+  },
+  {
+   "no": 7,
+   "category": "ustki-kiyim",
+   "name": "Zamokli yengil kurtka",
+   "brand": null,
+   "badge": null,
+   "color": "Bej",
+   "sizes": [
+    "M",
+    "L",
+    "XL",
+    "2XL",
+    "3XL"
+   ],
+   "price": 820000,
+   "image": "/img/products/p07.jpg",
+   "is_new": false,
+   "is_featured": false
+  },
+  {
+   "no": 8,
+   "category": "ustki-kiyim",
+   "name": "Stejkali bomber kurtka",
+   "brand": null,
+   "badge": "Yangi",
+   "color": "Bordo",
+   "sizes": [
+    "M",
+    "L",
+    "XL",
+    "2XL",
+    "3XL"
+   ],
+   "price": 880000,
+   "image": "/img/products/p08.jpg",
+   "is_new": true,
+   "is_featured": true
+  },
+  {
+   "no": 9,
+   "category": "kofta-sviter",
+   "name": "Zamokli trikotaj kofta",
+   "brand": null,
+   "badge": "Lux",
+   "color": "To'q ko'k / kulrang",
+   "sizes": [
+    "M",
+    "L",
+    "XL",
+    "2XL",
+    "3XL"
+   ],
+   "price": 480000,
+   "image": "/img/products/p09.jpg",
+   "is_new": false,
+   "is_featured": true
+  },
+  {
+   "no": 10,
+   "category": "kofta-sviter",
+   "name": "Zamokli xudi",
+   "brand": null,
+   "badge": null,
+   "color": "To'q ko'k",
+   "sizes": [
+    "M",
+    "L",
+    "XL",
+    "2XL",
+    "3XL"
+   ],
+   "price": 450000,
+   "image": "/img/products/p10.jpg",
+   "is_new": false,
+   "is_featured": false
+  },
+  {
+   "no": 11,
+   "category": "kofta-sviter",
+   "name": "Yarim zamokli sviter",
+   "brand": null,
+   "badge": null,
+   "color": "Qizil",
+   "sizes": [
+    "M",
+    "L",
+    "XL",
+    "2XL",
+    "3XL"
+   ],
+   "price": 390000,
+   "image": "/img/products/p11.jpg",
+   "is_new": false,
+   "is_featured": false
+  },
+  {
+   "no": 12,
+   "category": "sport",
+   "name": "Sport dvoyka",
+   "brand": null,
+   "badge": null,
+   "color": "To'q ko'k",
+   "sizes": [
+    "M",
+    "L",
+    "XL",
+    "2XL",
+    "3XL"
+   ],
+   "price": 750000,
+   "image": "/img/products/p12.jpg",
+   "is_new": false,
+   "is_featured": false
+  },
+  {
+   "no": 13,
+   "category": "sport",
+   "name": "Sport dvoyka, tik yoqa",
+   "brand": null,
+   "badge": null,
+   "color": "Kulrang",
+   "sizes": [
+    "M",
+    "L",
+    "XL",
+    "2XL",
+    "3XL"
+   ],
+   "price": 720000,
+   "image": "/img/products/p13.jpg",
+   "is_new": false,
+   "is_featured": false
+  },
+  {
+   "no": 14,
+   "category": "sport",
+   "name": "Kapyushonli sport dvoyka",
+   "brand": null,
+   "badge": "Yangi",
+   "color": "Bej / xaki",
+   "sizes": [
+    "M",
+    "L",
+    "XL",
+    "2XL",
+    "3XL"
+   ],
+   "price": 790000,
+   "image": "/img/products/p14.jpg",
+   "is_new": true,
+   "is_featured": true
+  },
+  {
+   "no": 15,
+   "category": "polo",
+   "name": "Trikotaj polo",
+   "brand": null,
+   "badge": null,
+   "color": "Terrakota",
+   "sizes": [
+    "M",
+    "L",
+    "XL",
+    "2XL",
+    "3XL"
+   ],
+   "price": 320000,
+   "image": "/img/products/p15.jpg",
+   "is_new": false,
+   "is_featured": false
+  },
+  {
+   "no": 16,
+   "category": "polo",
+   "name": "Zamokli polo, kontrast yoqa",
+   "brand": null,
+   "badge": null,
+   "color": "To'q ko'k",
+   "sizes": [
+    "M",
+    "L",
+    "XL",
+    "2XL",
+    "3XL"
+   ],
+   "price": 340000,
+   "image": "/img/products/p16.jpg",
+   "is_new": false,
+   "is_featured": false
+  },
+  {
+   "no": 17,
+   "category": "polo",
+   "name": "Trikotaj polo",
+   "brand": null,
+   "badge": null,
+   "color": "Ko'k",
+   "sizes": [
+    "M",
+    "L",
+    "XL",
+    "2XL",
+    "3XL"
+   ],
+   "price": 320000,
+   "image": "/img/products/p17.jpg",
+   "is_new": false,
+   "is_featured": false
+  },
+  {
+   "no": 18,
+   "category": "polo",
+   "name": "Polo, oq hoshiyali",
+   "brand": null,
+   "badge": null,
+   "color": "Bordo",
+   "sizes": [
+    "M",
+    "L",
+    "XL",
+    "2XL",
+    "3XL"
+   ],
+   "price": 300000,
+   "image": "/img/products/p18.jpg",
+   "is_new": false,
+   "is_featured": false
+  },
+  {
+   "no": 19,
+   "category": "polo",
+   "name": "Kontrast yengli polo",
+   "brand": null,
+   "badge": null,
+   "color": "Kulrang / qora",
+   "sizes": [
+    "M",
+    "L",
+    "XL",
+    "2XL",
+    "3XL"
+   ],
+   "price": 310000,
+   "image": "/img/products/p19.jpg",
+   "is_new": false,
+   "is_featured": false
+  },
+  {
+   "no": 20,
+   "category": "futbolka",
+   "name": "Yo'l-yo'l trikotaj futbolka",
+   "brand": null,
+   "badge": null,
+   "color": "To'q ko'k",
+   "sizes": [
+    "M",
+    "L",
+    "XL",
+    "2XL",
+    "3XL"
+   ],
+   "price": 260000,
+   "image": "/img/products/p20.jpg",
+   "is_new": false,
+   "is_featured": false
+  },
+  {
+   "no": 21,
+   "category": "futbolka",
+   "name": "Trikotaj futbolka",
+   "brand": null,
+   "badge": null,
+   "color": "To'q ko'k",
+   "sizes": [
+    "M",
+    "L",
+    "XL",
+    "2XL",
+    "3XL"
+   ],
+   "price": 240000,
+   "image": "/img/products/p21.jpg",
+   "is_new": false,
+   "is_featured": false
+  },
+  {
+   "no": 22,
+   "category": "futbolka",
+   "name": "Printli futbolka",
+   "brand": null,
+   "badge": null,
+   "color": "Oq",
+   "sizes": [
+    "M",
+    "L",
+    "XL",
+    "2XL",
+    "3XL"
+   ],
+   "price": 220000,
+   "image": "/img/products/p22.jpg",
+   "is_new": false,
+   "is_featured": false
+  },
+  {
+   "no": 23,
+   "category": "futbolka",
+   "name": "O'zbekiston gerbli futbolka",
+   "brand": null,
+   "badge": "Xit",
+   "color": "Oq",
+   "sizes": [
+    "M",
+    "L",
+    "XL",
+    "2XL",
+    "3XL"
+   ],
+   "price": 220000,
+   "image": "/img/products/p23.jpg",
+   "is_new": false,
+   "is_featured": false
+  },
+  {
+   "no": 24,
+   "category": "futbolka",
+   "name": "Trikotaj futbolka",
+   "brand": null,
+   "badge": null,
+   "color": "Sut rang",
+   "sizes": [
+    "M",
+    "L",
+    "XL",
+    "2XL",
+    "3XL"
+   ],
+   "price": 240000,
+   "image": "/img/products/p24.jpg",
+   "is_new": false,
+   "is_featured": false
+  },
+  {
+   "no": 25,
+   "category": "futbolka",
+   "name": "Trikotaj futbolka",
+   "brand": null,
+   "badge": null,
+   "color": "Havorang",
+   "sizes": [
+    "M",
+    "L",
+    "XL",
+    "2XL",
+    "3XL"
+   ],
+   "price": 240000,
+   "image": "/img/products/p25.jpg",
+   "is_new": false,
+   "is_featured": false
+  },
+  {
+   "no": 26,
+   "category": "futbolka",
+   "name": "Yo'l-yo'l futbolka",
+   "brand": null,
+   "badge": null,
+   "color": "Xaki",
+   "sizes": [
+    "M",
+    "L",
+    "XL",
+    "2XL",
+    "3XL"
+   ],
+   "price": 250000,
+   "image": "/img/products/p26.jpg",
+   "is_new": false,
+   "is_featured": false
+  },
+  {
+   "no": 27,
+   "category": "futbolka",
+   "name": "Bazaviy futbolka",
+   "brand": null,
+   "badge": null,
+   "color": "Qora",
+   "sizes": [
+    "M",
+    "L",
+    "XL",
+    "2XL",
+    "3XL"
+   ],
+   "price": 190000,
+   "image": "/img/products/p27.jpg",
+   "is_new": false,
+   "is_featured": false
+  },
+  {
+   "no": 28,
+   "category": "koylak",
+   "name": "Ramsey klassik ko'ylak",
+   "brand": "Ramsey",
+   "badge": null,
+   "color": "Havorang",
+   "sizes": [
+    "M",
+    "L",
+    "XL",
+    "2XL",
+    "3XL"
+   ],
+   "price": 420000,
+   "image": "/img/products/p28.jpg",
+   "is_new": false,
+   "is_featured": true
+  },
+  {
+   "no": 29,
+   "category": "koylak",
+   "name": "Klassik ko'ylak",
+   "brand": null,
+   "badge": null,
+   "color": "Oq",
+   "sizes": [
+    "M",
+    "L",
+    "XL",
+    "2XL",
+    "3XL"
+   ],
+   "price": 350000,
+   "image": "/img/products/p29.jpg",
+   "is_new": false,
+   "is_featured": false
+  },
+  {
+   "no": 30,
+   "category": "koylak",
+   "name": "Zig'ir ko'ylak",
+   "brand": null,
+   "badge": null,
+   "color": "Oq",
+   "sizes": [
+    "M",
+    "L",
+    "XL",
+    "2XL",
+    "3XL"
+   ],
+   "price": 380000,
+   "image": "/img/products/p30.jpg",
+   "is_new": false,
+   "is_featured": false
+  },
+  {
+   "no": 31,
+   "category": "koylak",
+   "name": "Yo'l-yo'l ko'ylak",
+   "brand": null,
+   "badge": null,
+   "color": "Havorang / oq",
+   "sizes": [
+    "M",
+    "L",
+    "XL",
+    "2XL",
+    "3XL"
+   ],
+   "price": 360000,
+   "image": "/img/products/p31.jpg",
+   "is_new": false,
+   "is_featured": false
+  },
+  {
+   "no": 32,
+   "category": "koylak",
+   "name": "Ko'ylak-kurtka",
+   "brand": null,
+   "badge": null,
+   "color": "Ko'k",
+   "sizes": [
+    "M",
+    "L",
+    "XL",
+    "2XL",
+    "3XL"
+   ],
+   "price": 390000,
+   "image": "/img/products/p32.jpg",
+   "is_new": false,
+   "is_featured": false
+  },
+  {
+   "no": 33,
+   "category": "koylak",
+   "name": "Ko'ylak",
+   "brand": null,
+   "badge": null,
+   "color": "Bordo",
+   "sizes": [
+    "M",
+    "L",
+    "XL",
+    "2XL",
+    "3XL"
+   ],
+   "price": 360000,
+   "image": "/img/products/p33.jpg",
+   "is_new": false,
+   "is_featured": false
+  },
+  {
+   "no": 34,
+   "category": "shim",
+   "name": "Rezinkali klassik shim",
+   "brand": null,
+   "badge": null,
+   "color": "To'q ko'k",
+   "sizes": [
+    "30",
+    "31",
+    "32",
+    "33",
+    "34",
+    "36"
+   ],
+   "price": 350000,
+   "image": "/img/products/p34.jpg",
+   "is_new": false,
+   "is_featured": false
+  },
+  {
+   "no": 35,
+   "category": "shim",
+   "name": "Sport shim",
+   "brand": null,
+   "badge": null,
+   "color": "Qora",
+   "sizes": [
+    "M",
+    "L",
+    "XL",
+    "2XL",
+    "3XL"
+   ],
+   "price": 320000,
+   "image": "/img/products/p35.jpg",
+   "is_new": false,
+   "is_featured": false
+  },
+  {
+   "no": 36,
+   "category": "shim",
+   "name": "Klassik shim",
+   "brand": null,
+   "badge": null,
+   "color": "Kulrang",
+   "sizes": [
+    "30",
+    "31",
+    "32",
+    "33",
+    "34",
+    "36"
+   ],
+   "price": 350000,
+   "image": "/img/products/p36.jpg",
+   "is_new": false,
+   "is_featured": false
+  },
+  {
+   "no": 37,
+   "category": "oyoq-kiyim",
+   "name": "Charm krossovka",
+   "brand": null,
+   "badge": "Charm",
+   "color": "Qora",
+   "sizes": [
+    "39",
+    "40",
+    "41",
+    "42",
+    "43",
+    "44"
+   ],
+   "price": 780000,
+   "image": "/img/products/p37.jpg",
+   "is_new": false,
+   "is_featured": true
+  },
+  {
+   "no": 38,
+   "category": "oyoq-kiyim",
+   "name": "Charm-zamsh krossovka",
+   "brand": null,
+   "badge": "Charm",
+   "color": "Jigarrang",
+   "sizes": [
+    "39",
+    "40",
+    "41",
+    "42",
+    "43",
+    "44"
+   ],
+   "price": 750000,
+   "image": "/img/products/p38.jpg",
+   "is_new": false,
+   "is_featured": false
+  },
+  {
+   "no": 39,
+   "category": "oyoq-kiyim",
+   "name": "To'qima krossovka",
+   "brand": null,
+   "badge": null,
+   "color": "To'q ko'k / oq",
+   "sizes": [
+    "39",
+    "40",
+    "41",
+    "42",
+    "43",
+    "44"
+   ],
+   "price": 520000,
+   "image": "/img/products/p39.jpg",
+   "is_new": false,
+   "is_featured": false
+  },
+  {
+   "no": 40,
+   "category": "oyoq-kiyim",
+   "name": "To'qima krossovka",
+   "brand": null,
+   "badge": null,
+   "color": "Kulrang",
+   "sizes": [
+    "39",
+    "40",
+    "41",
+    "42",
+    "43",
+    "44"
+   ],
+   "price": 520000,
+   "image": "/img/products/p40.jpg",
+   "is_new": false,
+   "is_featured": false
+  },
+  {
+   "no": 41,
+   "category": "oyoq-kiyim",
+   "name": "Yengil krossovka",
+   "brand": null,
+   "badge": null,
+   "color": "Jigarrang",
+   "sizes": [
+    "39",
+    "40",
+    "41",
+    "42",
+    "43",
+    "44"
+   ],
+   "price": 560000,
+   "image": "/img/products/p41.jpg",
+   "is_new": false,
+   "is_featured": false
+  },
+  {
+   "no": 42,
+   "category": "oyoq-kiyim",
+   "name": "Charm shippak (kesishgan)",
+   "brand": null,
+   "badge": null,
+   "color": "To'q ko'k",
+   "sizes": [
+    "39",
+    "40",
+    "41",
+    "42",
+    "43",
+    "44"
+   ],
+   "price": 380000,
+   "image": "/img/products/p42.jpg",
+   "is_new": false,
+   "is_featured": false
+  },
+  {
+   "no": 43,
+   "category": "oyoq-kiyim",
+   "name": "Charm shippak (H-model)",
+   "brand": null,
+   "badge": null,
+   "color": "Bordo",
+   "sizes": [
+    "39",
+    "40",
+    "41",
+    "42",
+    "43",
+    "44"
+   ],
+   "price": 390000,
+   "image": "/img/products/p43.jpg",
+   "is_new": false,
+   "is_featured": false
+  },
+  {
+   "no": 44,
+   "category": "aksessuar",
+   "name": "Charm yelka sumkasi",
+   "brand": null,
+   "badge": null,
+   "color": "To'q ko'k",
+   "sizes": [
+    "Yagona"
+   ],
+   "price": 450000,
+   "image": "/img/products/p44.jpg",
+   "is_new": false,
+   "is_featured": false
+  },
+  {
+   "no": 45,
+   "category": "aksessuar",
+   "name": "Charm klatch",
+   "brand": null,
+   "badge": null,
+   "color": "Qora",
+   "sizes": [
+    "Yagona"
+   ],
+   "price": 350000,
+   "image": "/img/products/p45.jpg",
+   "is_new": false,
+   "is_featured": false
+  }
+ ]
+}

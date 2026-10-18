@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0C0B09">
+<meta name="robots" content="noindex, nofollow">
+<title>Admin panel — ISTANBUL BRAND</title>
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="/admin.css">
+</head>
+<body>
+<div id="login" class="login" hidden>
+  <form class="login-card" id="loginForm" autocomplete="on">
+    <img src="/img/logo-full.jpg" alt="ISTANBUL BRAND" class="login-logo">
+    <h1>Admin panel</h1>
+    <p>Do'konni boshqarish uchun parolni kiriting</p>
+    <label class="field"><span>Parol</span><input class="input" type="password" id="pw" autocomplete="current-password" required></label>
+    <button class="btn btn-gold" type="submit" id="loginBtn">Kirish</button>
+    <p class="err" id="loginErr" hidden></p>
+  </form>
+</div>
+
+<div id="shell" class="shell" hidden>
+  <aside class="side">
+    <a class="brand" href="#dashboard">
+      <img src="/img/logo-mark.png" alt="">
+      <span><b>ISTANBUL</b><small>BRAND · Admin</small></span>
+    </a>
+    <nav class="snav" id="snav">
+      <a href="#dashboard" data-p="dashboard"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="9" rx="2"/><rect x="13.5" y="3.5" width="7" height="5" rx="2"/><rect x="13.5" y="11.5" width="7" height="9" rx="2"/><rect x="3.5" y="15.5" width="7" height="5" rx="2"/></svg><span>Boshqaruv</span></a>
+      <a href="#orders" data-p="orders"><svg viewBox="0 0 24 24"><path d="M5.5 8h13l-1.1 11.2a1.5 1.5 0 0 1-1.5 1.3H8.1a1.5 1.5 0 0 1-1.5-1.3z"/><path d="M9 10V7a3 3 0 0 1 6 0v3"/></svg><span>Buyurtmalar</span><b class="nbadge" id="navChecking" hidden></b></a>
+      <a href="#products" data-p="products"><svg viewBox="0 0 24 24"><path d="M8 3.5 4 6.5l2 3.5 1.5-.8V20.5h9V9.2l1.5.8 2-3.5-4-3h-2.5a2.5 2.5 0 0 1-5 0z"/></svg><span>Mahsulotlar</span></a>
+      <a href="#categories" data-p="categories"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/></svg><span>Kategoriyalar</span></a>
+      <a href="#customers" data-p="customers"><svg viewBox="0 0 24 24"><circle cx="9" cy="8.5" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 5a3.5 3.5 0 0 1 0 7M18 14.5a6.5 6.5 0 0 1 3.5 5.5"/></svg><span>Mijozlar</span></a>
+      <a href="#settings" data-p="settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg><span>Sozlamalar</span></a>
+    </nav>
+    <div class="side-foot">
+      <a href="/" target="_blank" rel="noopener" class="side-link"><svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4 19V7.5A1.5 1.5 0 0 1 5.5 6H10"/></svg><span>Do'konni ochish</span></a>
+      <button class="side-link" id="logoutBtn"><svg viewBox="0 0 24 24"><path d="M15 4h3.5A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5H15M10 16l-4-4 4-4M6 12h10"/></svg><span>Chiqish</span></button>
+    </div>
+  </aside>
+  <main class="main" id="main"></main>
+</div>
+
+<div id="modal" class="modal-wrap" hidden></div>
+<div id="drawer" class="drawer-wrap" hidden></div>
+<div id="toast" class="toast" hidden></div>
+<script src="/admin.js"></script>
+</body>
+</html>
